@@ -13,6 +13,7 @@
 
 using cs225::HSLAPixel;
 using cs225::PNG;
+using std::min;
 
 /**
  * Returns an image that has been transformed to grayscale.
@@ -61,7 +62,16 @@ PNG grayscale(PNG image) {
  * @return The image with a spotlight.
  */
 PNG createSpotlight(PNG image, int centerX, int centerY) {
-
+  for (unsigned x=0; x < image.width(); x++){
+    for (unsigned y=0; y < image.height(); y++){
+      HSLAPixel &p = image.getPixel(x, y);
+      double decreased = sqrt((centerX-x)*(centerX-x)+(centerY-y)*(centerY-y))*0.005;
+      if (decreased<0.8){
+        p.l = p.l*(1-decreased);
+      }
+      else{p.l *= 0.2;}
+    }
+  }
   return image;
   
 }
@@ -78,7 +88,13 @@ PNG createSpotlight(PNG image, int centerX, int centerY) {
  * @return The illinify'd image.
 **/
 PNG illinify(PNG image) {
-
+  for (unsigned x = 0; x < image.width(); x++){
+    for (unsigned y = 0; y < image.height(); y++){
+      HSLAPixel & p = image.getPixel(x, y);
+      if (p.h < 113.5 or p.h>293.5){p.h=11;}
+      else{p.h=216;}
+    }
+  }
   return image;
 }
  
@@ -96,6 +112,14 @@ PNG illinify(PNG image) {
 * @return The watermarked image.
 */
 PNG watermark(PNG firstImage, PNG secondImage) {
-
+  for (unsigned x=0; x<min(firstImage.width(), secondImage.width()); x++){
+    for (unsigned y=0; y<min(firstImage.height(),secondImage.height()); y++){
+      HSLAPixel & s = secondImage.getPixel(x, y);
+      if (s.l==1){
+        HSLAPixel & f = firstImage.getPixel(x, y);
+        f.l = min(1.0,f.l+0.2);
+      }
+    }
+  }
   return firstImage;
 }
