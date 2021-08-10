@@ -5,6 +5,8 @@ stickers
 *.o
 *.d
 
+.vscode
+
 # generated images
 lighten.png
 saturate.png
