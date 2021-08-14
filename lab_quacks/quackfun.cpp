@@ -29,9 +29,13 @@ namespace QuackFun {
 template <typename T>
 T sum(stack<T>& s)
 {
-
-    // Your code here
-    return T(); // stub return value (0 for primitive types). Change this!
+    if (s.empty()) {return 0;}
+    if (s.size()==1) {return s.top();}
+    T first = s.top();
+    s.pop();
+    T last_sum = QuackFun::sum(s);
+    s.push(first);
+    return last_sum + first; // stub return value (0 for primitive types). Change this!
                 // Note: T() is the default value for objects, and 0 for
                 // primitive types
 }
@@ -55,9 +59,25 @@ T sum(stack<T>& s)
  */
 bool isBalanced(queue<char> input)
 {
-
-    // @TODO: Make less optimistic
-    return true;
+    stack<char> mystack;
+    while (!input.empty()){
+        char first = input.front();
+        if (first=='['){
+            mystack.push(first);
+        }
+        else if (first==']')
+        {
+            if(mystack.empty()){
+                return false;
+            }
+            else {
+                mystack.pop();
+            }
+        }
+        input.pop();
+    };
+    
+    return mystack.empty() ? true:false;
 }
 
 /**
@@ -79,8 +99,35 @@ template <typename T>
 void scramble(queue<T>& q)
 {
     stack<T> s;
-    // optional: queue<T> q2;
-
-    // Your code here
+    queue<T> q2;  // swapped queue
+    unsigned int size = q.size();
+    //int block_size = new int(1); //blocks of integers which may be reversed
+    unsigned int block_size = 1;  
+    while(size>0){ 
+        if((block_size) % 2 ==0){
+            block_size = std::min(block_size, size);  //next block size
+            // reverse this block
+            for (unsigned i=0; i<block_size; i++){
+                T& item = q.front();
+                s.push(item);
+                q.pop();
+            }
+            for (unsigned i=0; i<block_size; i++){
+                q2.push(s.top());
+                s.pop();
+            }
+        }
+        else{
+            block_size = std::min(block_size, size);
+            for (unsigned i=0; i<block_size; i++){
+                T& item = q.front();
+                q2.push(item);
+                q.pop();
+            }
+        }
+        size -= block_size;
+        (block_size)++;
+    };
+    q = q2;
 }
 }
