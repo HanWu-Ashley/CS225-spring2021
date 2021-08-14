@@ -30,7 +30,10 @@ const HSLAPixel PISTIL_COLOR = color::YELLOW;
 const int PETAL_RADIUS = 2;
 const HSLAPixel PETAL_COLOR = color::RED;
 
-Flower::Flower(const Vector2& center)
+Flower::Flower(const Vector2& center):
+stem(center, STEM_COLOR, STEM_HEIGHT, STEM_WIDTH),
+pistil(center, PISTIL_COLOR, PISTIL_RADIUS),
+leaf(LEAF_COLOR, Vector2(0,0), Vector2(0,0), Vector2(0,0))
 {
     const Vector2 stem_center(center.x(), center.y() + STEM_HEIGHT / 2);
     Rectangle my_stem(stem_center, STEM_COLOR, STEM_WIDTH, STEM_HEIGHT);
